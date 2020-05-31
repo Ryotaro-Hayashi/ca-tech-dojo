@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  api:
+    tty: true
+    build: .
+    ports:
+      # ホスト:コンテナ
+      - "3000:8080"
+    depends_on:
+      - mysql
+    container_name: api
+    # コンテナのtechtrain-CAとマウント
+    volumes:
+      - .:/ca-tech-dojo
+    # command: "go run server.go"
+
+  mysql:
+    image: mysql:5.7.22
+    environment:
+      # MYSQL_DATABASE: dojo_db
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: dojo_user
+      MYSQL_PASSWORD: userpass
+    container_name: mysql
+    volumes:
+      # db-data という volume を作成
+      - db-data:/var/lib/mysql
+      # 初期データを格納
+      - ./initdb.d:/docker-entrypoint-initdb.d
+      # 文字コード読み込み
+      - ./initdb.d/my.cnf:/etc/mysql/conf.d/my.cnf
+    # workbench と接続するためにホストとコンテナを接続
+    ports:
+      - "3306:3306"
+
+# docker のリソースとしてのvolume
+volumes:
+  # ボリュームの名前を指定して保存
+  db-data:
