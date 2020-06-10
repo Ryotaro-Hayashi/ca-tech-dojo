@@ -4,15 +4,19 @@ import (
 	"net/http"
 	"fmt"
 	"ca-tech-dojo/database"
+	"encoding/json"
+	"log"
 )
 
 type UserController struct {
-	SqlHandler database.SqlHandler
+	UserRepository database.UserRepository
 }
 
 func NewUserController(sqlHandler database.SqlHandler) UserController {
 	return UserController {
-		SqlHandler: sqlHandler,
+		UserRepository: database.UserRepository {
+			SqlHandler: sqlHandler,
+		},
 	}
 }
 
@@ -24,4 +28,23 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 
 func (controller UserController) GoodnightHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "good night!\n")
+}
+
+
+// ユーザー一覧をJSONで返す
+func (controller UserController) Index(w http.ResponseWriter, r *http.Request) {
+	// ユーザーをDBから取得
+	users, err := controller.UserRepository.GetUsers()
+	if err != nil {
+		fmt.Fprint(w, err)
+	}
+	log.Print("The users struct is ", users)
+
+	usersByte, err := json.Marshal(users) // 構造体を []byte へ変換
+    if err != nil {
+        fmt.Fprint(w, err)
+    }
+    usersJson := string(usersByte) // []byte をJSON文字列に変換
+
+	fmt.Fprint(w, usersJson)
 }
