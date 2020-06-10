@@ -11,7 +11,7 @@ services:
       - mysql
     container_name: api
     volumes:
-      - .:/ca-tech-dojo
+      - ./src:/ca-tech-dojo
     command: "go run server.go"
 
   mysql:
