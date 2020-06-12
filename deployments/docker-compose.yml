@@ -3,7 +3,7 @@ version: '3'
 services:
   api:
     tty: true
-    build: .
+    build: ../build/
     ports:
       # ホスト:コンテナ
       - "8080:8080"
@@ -11,7 +11,7 @@ services:
       - mysql
     container_name: api
     volumes:
-      - ./src:/ca-tech-dojo
+      - ../src:/ca-tech-dojo
     command: "go run server.go"
 
   mysql:
@@ -26,9 +26,9 @@ services:
       # db-data という volume を作成
       - db-data:/var/lib/mysql
       # 初期データを格納
-      - ./initdb.d:/docker-entrypoint-initdb.d
+      - ../initdb.d:/docker-entrypoint-initdb.d
       # 文字コード読み込み
-      - ./initdb.d/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ../initdb.d/my.cnf:/etc/mysql/conf.d/my.cnf
     # workbench と接続するためにホストとコンテナを接続
     ports:
       - "3306:3306"
