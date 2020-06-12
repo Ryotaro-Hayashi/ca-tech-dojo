@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 	"log"
-	"ca-tech-dojo/controllers"
-	"ca-tech-dojo/database"
+	"ca-tech-dojo/internal/game_api/user/controllers"
+	"ca-tech-dojo/pkg/database"
 )
 
 func main() {

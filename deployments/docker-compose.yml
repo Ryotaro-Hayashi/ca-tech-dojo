@@ -3,7 +3,7 @@ version: '3'
 services:
   api:
     tty: true
-    build: .
+    build: ../build/
     ports:
       # ホスト:コンテナ
       - "8080:8080"
@@ -11,8 +11,8 @@ services:
       - mysql
     container_name: api
     volumes:
-      - ./src:/ca-tech-dojo
-    command: "go run server.go"
+      - ..:/ca-tech-dojo
+    command: "go run /ca-tech-dojo/cmd/game_api/server.go"
 
   mysql:
     image: mysql:5.7.22

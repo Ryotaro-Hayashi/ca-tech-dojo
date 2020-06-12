@@ -1,7 +1,7 @@
 package database
 
 import (
-	"ca-tech-dojo/models"
+	"ca-tech-dojo/internal/game_api/user/models"
 )
 
 type UserRepository struct {
