@@ -6,7 +6,7 @@ WORKDIR /ca-tech-dojo
 # Go Modules を有効化
 ENV GO111MODULE=on
 
-# COPY ./../src/go.mod .
+# COPY go.mod .
 # COPY go.sum .
 
 # go.mod 内のパッケージをダウンロード

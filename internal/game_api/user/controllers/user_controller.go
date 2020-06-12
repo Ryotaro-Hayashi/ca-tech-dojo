@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 	"fmt"
-	"ca-tech-dojo/database"
+	"ca-tech-dojo/pkg/database"
 	"encoding/json"
 	"log"
 )
