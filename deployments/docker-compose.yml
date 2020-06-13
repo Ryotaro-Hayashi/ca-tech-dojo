@@ -3,17 +3,16 @@ version: '3'
 services:
   api:
     tty: true
-    build: .
+    build: ../build/
     ports:
       # ホスト:コンテナ
-      - "3000:8080"
+      - "8080:8080"
     depends_on:
       - mysql
     container_name: api
-    # コンテナのtechtrain-CAとマウント
     volumes:
-      - .:/ca-tech-dojo
-    # command: "go run server.go"
+      - ..:/ca-tech-dojo
+    command: "go run /ca-tech-dojo/cmd/game_api/server.go"
 
   mysql:
     image: mysql:5.7.22
