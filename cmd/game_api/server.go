@@ -16,6 +16,8 @@ func main() {
 	http.HandleFunc("/good-night", userController.GoodnightHandler)
 	http.HandleFunc("/users/get", userController.Index)
 
+	http.HandleFunc("/user/create", userController.Create)
+
 	// 第二引数でhandlerにnilを渡して、DefaultServeMuxを使用
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
