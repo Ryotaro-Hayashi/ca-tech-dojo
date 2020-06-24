@@ -10,12 +10,12 @@ import (
 )
 
 type UserController struct {
-	UserRepository database.UserRepository
-	jwt.JwtHandler
+	database.UserRepository
+	*jwt.JwtHandler
 }
 
-func NewUserController(sqlHandler database.SqlHandler, jwtHandler jwt.JwtHandler) UserController {
-	return UserController {
+func NewUserController(sqlHandler *database.SqlHandler, jwtHandler *jwt.JwtHandler) *UserController {
+	return &UserController {
 		UserRepository: database.UserRepository {
 			SqlHandler: sqlHandler,
 		},
@@ -35,9 +35,9 @@ func (controller UserController) GoodnightHandler(w http.ResponseWriter, r *http
 
 
 // ユーザー一覧をJSONで返す
-func (controller UserController) Index(w http.ResponseWriter, r *http.Request) {
+func (controller *UserController) Index(w http.ResponseWriter, r *http.Request) {
 	// ユーザーをDBから取得
-	users, err := controller.UserRepository.GetUsers()
+	users, err := controller.UserRepository.GetAll()
 	if err != nil {
 		fmt.Fprint(w, err)
 	}
@@ -52,12 +52,19 @@ func (controller UserController) Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, usersJson)
 }
 
-// トークンを生成してユーザーを保存する
+// トークンを生成してユーザーを保存してトークンを返す
 func (controller *UserController) Create(w http.ResponseWriter, r *http.Request) {
-	tokenString, err := controller.JwtHandler.CreateToken() // トークンの生成
+	tokenString, err := controller.JwtHandler.Create() // トークンの生成
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 	}
 
-	fmt.Fprint(w, tokenString)
+	id, err := controller.UserRepository.Create() // ユーザーを保存
+	if err != nil {
+		fmt.Fprint(w, err.Error())
+	}
+
+	log.Print("The token is ", tokenString)
+
+	fmt.Fprint(w, id)
 }
