@@ -52,7 +52,7 @@ func (controller *UserController) Index(w http.ResponseWriter, r *http.Request) 
 	fmt.Fprint(w, usersJson)
 }
 
-// トークンを生成してユーザーを保存する
+// トークンを生成してユーザーを保存してトークンを返す
 func (controller *UserController) Create(w http.ResponseWriter, r *http.Request) {
 	tokenString, err := controller.JwtHandler.Create() // トークンの生成
 	if err != nil {
