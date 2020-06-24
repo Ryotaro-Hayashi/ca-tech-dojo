@@ -37,7 +37,7 @@ func (controller UserController) GoodnightHandler(w http.ResponseWriter, r *http
 // ユーザー一覧をJSONで返す
 func (controller UserController) Index(w http.ResponseWriter, r *http.Request) {
 	// ユーザーをDBから取得
-	users, err := controller.UserRepository.GetUsers()
+	users, err := controller.UserRepository.GetAll()
 	if err != nil {
 		fmt.Fprint(w, err)
 	}
@@ -54,10 +54,17 @@ func (controller UserController) Index(w http.ResponseWriter, r *http.Request) {
 
 // トークンを生成してユーザーを保存する
 func (controller *UserController) Create(w http.ResponseWriter, r *http.Request) {
-	tokenString, err := controller.JwtHandler.CreateToken() // トークンの生成
+	tokenString, err := controller.JwtHandler.Create() // トークンの生成
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 	}
 
-	fmt.Fprint(w, tokenString)
+	id, err := controller.UserRepository.Create() // ユーザーを保存
+	if err != nil {
+		fmt.Fprint(w, err.Error())
+	}
+
+	log.Print("The token is ", tokenString)
+
+	fmt.Fprint(w, id)
 }
