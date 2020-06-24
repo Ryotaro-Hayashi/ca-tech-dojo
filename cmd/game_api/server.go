@@ -5,11 +5,12 @@ import (
 	"log"
 	"ca-tech-dojo/internal/game_api/user/controllers"
 	"ca-tech-dojo/pkg/database"
+	"ca-tech-dojo/pkg/jwt"
 )
 
 func main() {
 	// コントローラーの初期化とデータベースの初期化
-	userController := controllers.NewUserController(database.NewSqlHandler())
+	userController := controllers.NewUserController(database.NewSqlHandler(), jwt.NewJwtHandler())
 
 	// "/hello"に対しての処理を設定
 	http.HandleFunc("/hello", controllers.HelloHandler)
