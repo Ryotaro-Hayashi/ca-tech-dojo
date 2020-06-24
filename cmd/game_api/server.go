@@ -9,8 +9,11 @@ import (
 )
 
 func main() {
-	// コントローラーの初期化とデータベースの初期化
-	userController := controllers.NewUserController(database.NewSqlHandler(), jwt.NewJwtHandler())
+	sqlHandler := database.NewSqlHandler()
+	jwtHandler := jwt.NewJwtHandler()
+
+	// コントローラーの初期化
+	userController := controllers.NewUserController(sqlHandler, jwtHandler)
 
 	// "/hello"に対しての処理を設定
 	http.HandleFunc("/hello", controllers.HelloHandler)

@@ -12,8 +12,8 @@ type JwtHandler struct {
 	Token *jwt.Token
 }
 
-func NewJwtHandler() (jwtHandler JwtHandler){
-	jwtHandler = JwtHandler{}
+func NewJwtHandler() (jwtHandler *JwtHandler){
+	jwtHandler = new(JwtHandler)
 	return
 }
 
