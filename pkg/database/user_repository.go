@@ -35,7 +35,7 @@ func (repo *UserRepository) GetAll() (users models.Users, err error){
 	return
 }
 
-// DBにユーザーを保存して返す
+// DBにユーザーを保存して、保存したユーザーidを返す
 func (repo *UserRepository) Create(u models.User) (id int64, err error) {
 	result, err := repo.SqlHandler.Conn.Exec("INSERT INTO users (name, token) VALUES (?, ?)", u.Name, u.Token)
 	if err != nil {

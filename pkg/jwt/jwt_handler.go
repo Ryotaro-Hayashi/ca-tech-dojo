@@ -21,7 +21,7 @@ func NewJwtHandler() (jwtHandler *JwtHandler){
 // var varifyKey *rsa.PublicKey  // 公開鍵
 // var signKey   *rsa.PrivateKey // 秘密鍵
 
-// トークンを生成して返す
+// トークンを生成して、ユーザーの構造体に格納して返す
 func (handler *JwtHandler) Create(u models.User) (user models.User, err error) {
 	signBytes, err := ioutil.ReadFile("./docs/key/private-key.pem") // 秘密鍵の読み込み
 	if err != nil {

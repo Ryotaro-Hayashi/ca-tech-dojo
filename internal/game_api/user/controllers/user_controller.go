@@ -44,6 +44,13 @@ func (controller *UserController) Index(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// ヘッダーのContent-Typeを検証
+	if r.Header.Get("Content-Type") != "application/json" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "The ContentーType is limited to the application/json")
+		return
+	}
+
 	// ユーザーをDBから取得
 	users, err := controller.UserRepository.GetAll()
 	if err != nil {
@@ -60,7 +67,7 @@ func (controller *UserController) Index(w http.ResponseWriter, r *http.Request) 
 	fmt.Fprint(w, usersJson)
 }
 
-// トークンを生成してユーザーを保存してトークンを返す
+// トークンを生成してユーザーを保存して、保存したユーザーidを返す
 func (controller *UserController) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost { // POSTリクエストのみ許可
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -80,6 +87,7 @@ func (controller *UserController) Create(w http.ResponseWriter, r *http.Request)
     if err != nil { 
       panic(err) 
 	} 
+
 	user := models.User{}
     err = json.Unmarshal(body, &user)  // []byte型を構造体に変換
     if err != nil { 
