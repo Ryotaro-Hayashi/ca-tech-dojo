@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"ca-tech-dojo/pkg/database"
 	"ca-tech-dojo/pkg/jwt"
+	"ca-tech-dojo/internal/game_api/user/models"
 	"encoding/json"
 	"log"
+	"io/ioutil"
 )
 
 type UserController struct {
@@ -36,6 +38,12 @@ func (controller UserController) GoodnightHandler(w http.ResponseWriter, r *http
 
 // ユーザー一覧をJSONで返す
 func (controller *UserController) Index(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet { // GETリクエストのみ許可
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		fmt.Fprint(w, "The request is limited to the GET method")
+		return
+	}
+
 	// ユーザーをDBから取得
 	users, err := controller.UserRepository.GetAll()
 	if err != nil {
@@ -56,9 +64,29 @@ func (controller *UserController) Index(w http.ResponseWriter, r *http.Request) 
 func (controller *UserController) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost { // POSTリクエストのみ許可
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		fmt.Fprint(w, "The request is limited to the POST method")
+		fmt.Fprint(w, "The Request is limited to the POST method")
 		return
 	}
+
+	// ヘッダーのContent-Typeを検証
+	if r.Header.Get("Content-Type") != "application/json" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "The ContentーType is limited to the application/json")
+		return
+	}
+
+	// リクエストボディを読み取って[]byte型の変数に格納
+	body, err := ioutil.ReadAll(r.Body) 
+    if err != nil { 
+      panic(err) 
+	} 
+	user := models.User{}
+    err = json.Unmarshal(body, &user)  // []byte型を構造体に変換
+    if err != nil { 
+     panic(err) 
+    } 
+
+	log.Printf("The request body is %+v", user)
 
 	tokenString, err := controller.JwtHandler.Create() // トークンの生成
 	if err != nil {
