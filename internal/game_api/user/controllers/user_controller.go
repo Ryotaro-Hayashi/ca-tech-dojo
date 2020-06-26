@@ -88,17 +88,17 @@ func (controller *UserController) Create(w http.ResponseWriter, r *http.Request)
 
 	log.Printf("The request body is %+v", user)
 
-	tokenString, err := controller.JwtHandler.Create() // トークンの生成
+	user, err = controller.JwtHandler.Create(user) // トークンの生成
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 	}
 
-	id, err := controller.UserRepository.Create() // ユーザーを保存
+	id, err := controller.UserRepository.Create(user) // ユーザーを保存
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 	}
 
-	log.Print("The token is ", tokenString)
+	log.Print("The stored user is %+v", user)
 
 	fmt.Fprint(w, id)
 }

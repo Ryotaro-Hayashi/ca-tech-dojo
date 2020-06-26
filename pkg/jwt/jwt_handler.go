@@ -6,6 +6,7 @@ import (
 	"log"
 	jwt "github.com/dgrijalva/jwt-go"
 	// request "github.com/dgrijalva/jwt-go/request"
+	"ca-tech-dojo/internal/game_api/user/models"
 )
 
 type JwtHandler struct {
@@ -21,9 +22,7 @@ func NewJwtHandler() (jwtHandler *JwtHandler){
 // var signKey   *rsa.PrivateKey // 秘密鍵
 
 // トークンを生成して返す
-func (handler *JwtHandler) Create() (tokenString string, err error) {
-	userName := "testman"
-
+func (handler *JwtHandler) Create(u models.User) (user models.User, err error) {
 	signBytes, err := ioutil.ReadFile("./docs/key/private-key.pem") // 秘密鍵の読み込み
 	if err != nil {
 		panic(err)
@@ -35,17 +34,20 @@ func (handler *JwtHandler) Create() (tokenString string, err error) {
         panic(err)
 	}
 
-	// 署名アルゴリズムを指定してトークンを生成
+	// 署名アルゴリズムを指定してトークン型を生成
 	token := jwt.New(jwt.SigningMethodRS256)
 
 	claims := token.Claims.(jwt.MapClaims) // クレームを設定
-	claims["name"] = userName
+	claims["name"] = u.Name
 
-	tokenString, err = token.SignedString(signKey) // 署名
+	tokenString, err := token.SignedString(signKey) // 署名
 	if err != nil {
 		log.Print("error is ", err.Error())
 		return
 	}
+
+	u.Token = tokenString
+	user = u
 
 	return
 }
