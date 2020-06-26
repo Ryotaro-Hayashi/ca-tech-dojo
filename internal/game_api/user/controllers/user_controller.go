@@ -54,6 +54,12 @@ func (controller *UserController) Index(w http.ResponseWriter, r *http.Request) 
 
 // トークンを生成してユーザーを保存してトークンを返す
 func (controller *UserController) Create(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost { // POSTリクエストのみ許可
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		fmt.Fprint(w, "The request is limited to the POST method")
+		return
+	}
+
 	tokenString, err := controller.JwtHandler.Create() // トークンの生成
 	if err != nil {
 		fmt.Fprint(w, err.Error())
