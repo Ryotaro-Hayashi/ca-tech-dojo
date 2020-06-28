@@ -45,11 +45,11 @@ func (controller *UserController) Index(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// ヘッダーのContent-Typeを検証
-	if r.Header.Get("Content-Type") != "application/json" {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "The ContentーType is limited to the application/json")
-		return
-	}
+	// if r.Header.Get("Content-Type") != "application/json" {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	fmt.Fprint(w, "The ContentーType is limited to the application/json")
+	// 	return
+	// }
 
 	// ユーザーをDBから取得
 	users, err := controller.UserRepository.GetAll()
