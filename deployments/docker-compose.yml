@@ -30,8 +30,8 @@ services:
       # 文字コード読み込み
       - ./initdb.d/my.cnf:/etc/mysql/conf.d/my.cnf
     # workbench と接続するためにホストとコンテナを接続
-    ports:
-      - "3306:3306"
+    # ports:
+    #   - "3306:3306"
 
 # docker のリソースとしてのvolume
 volumes:
