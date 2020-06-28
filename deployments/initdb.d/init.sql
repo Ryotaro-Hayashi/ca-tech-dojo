@@ -5,7 +5,7 @@ USE dojo_db;
 CREATE TABLE users(
   id              INTEGER PRIMARY KEY AUTO_INCREMENT,
   name            VARCHAR(40) NOT NULL,
-  token           VARCHAR(255) UNIQUE,
+  token           TEXT,
   created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
