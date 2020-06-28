@@ -7,6 +7,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	// request "github.com/dgrijalva/jwt-go/request"
 	"ca-tech-dojo/internal/game_api/user/models"
+	"time"
 )
 
 type JwtHandler struct {
@@ -39,6 +40,7 @@ func (handler *JwtHandler) Create(u models.User) (user models.User, err error) {
 
 	claims := token.Claims.(jwt.MapClaims) // クレームを設定
 	claims["name"] = u.Name
+	claims["iat"] = time.Now().Unix() // トークンの発行時間
 
 	tokenString, err := token.SignedString(signKey) // 署名
 	if err != nil {
