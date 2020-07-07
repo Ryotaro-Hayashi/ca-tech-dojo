@@ -49,3 +49,27 @@ func (repo *UserRepository) Create(u models.User) (id int64, err error) {
 
 	return
 }
+
+// データベースのユーザーをidで検索して返す
+func (repo *UserRepository) FindById(id int64) (user models.User, err error) {
+	row, err := repo.SqlHandler.Conn.Query("SELECT name, token FROM users where id = ?", id)
+	if err != nil {
+		return
+	}
+	defer row.Close()
+
+	var name string
+	var token string
+
+	row.Next()
+	if err = row.Scan(&name, &token); err != nil {
+		return
+	}
+
+	user = models.User {
+		Name: name,
+		Token: token,
+	}
+
+	return
+}

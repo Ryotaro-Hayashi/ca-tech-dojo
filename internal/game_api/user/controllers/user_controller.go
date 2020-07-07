@@ -44,13 +44,6 @@ func (controller *UserController) Index(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// ヘッダーのContent-Typeを検証
-	// if r.Header.Get("Content-Type") != "application/json" {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	fmt.Fprint(w, "The ContentーType is limited to the application/json")
-	// 	return
-	// }
-
 	// ユーザーをDBから取得
 	users, err := controller.UserRepository.GetAll()
 	if err != nil {
@@ -106,7 +99,10 @@ func (controller *UserController) Create(w http.ResponseWriter, r *http.Request)
 		fmt.Fprint(w, err.Error())
 	}
 
-	log.Print("The stored user is %+v", user)
+	user, err = controller.UserRepository.FindById(id) // idでユーザ検索
+	if err != nil {
+		fmt.Fprint(w, err.Error())
+	}
 
-	fmt.Fprint(w, id)
+	fmt.Fprint(w, user.Token)
 }
