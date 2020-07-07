@@ -104,5 +104,14 @@ func (controller *UserController) Create(w http.ResponseWriter, r *http.Request)
 		fmt.Fprint(w, err.Error())
 	}
 
-	fmt.Fprint(w, user.Token)
+	tokenMap := map[string]string{"token": user.Token} // tokenのmapを作成
+
+	tokenByte, err := json.Marshal(tokenMap) // mapを []byte へ変換
+    if err != nil {
+		fmt.Fprint(w, err)
+	}
+	
+	tokenJson := string(tokenByte) // []byte をJSON文字列に変換
+
+	fmt.Fprint(w, tokenJson)
 }
