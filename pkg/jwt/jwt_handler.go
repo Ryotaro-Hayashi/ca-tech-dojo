@@ -3,7 +3,6 @@ package jwt
 import (
 	"log"
 	jwt "github.com/dgrijalva/jwt-go"
-	"ca-tech-dojo/internal/game_api/user/models"
 	"time"
 	"github.com/google/uuid"
 )
@@ -22,7 +21,7 @@ const (
 )
 
 // トークンを生成して、ユーザーの構造体に格納して返す
-func (handler *JwtHandler) Create(u models.User) (user models.User, err error) {
+func (handler *JwtHandler) Create(name string) (tokenString string, err error) {
 
 	// 署名アルゴリズムを指定してトークン型を生成
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -34,20 +33,17 @@ func (handler *JwtHandler) Create(u models.User) (user models.User, err error) {
     }
 
 	claims := token.Claims.(jwt.MapClaims) // クレームを設定
-	claims["name"] = u.Name
+	claims["name"] = name
 	claims["iat"] = time.Now().Unix() // トークンの発行時間
 	claims["sub"] = uu.String() // 一意な識別子
 
 	log.Print("the uuid is ", uu.String())
 
-	tokenString, err := token.SignedString([]byte(signKey)) // 署名
+	tokenString, err = token.SignedString([]byte(signKey)) // 署名
 	if err != nil {
 		log.Print("error is ", err.Error())
 		return
 	}
-
-	u.Token = tokenString
-	user = u
-
+	
 	return
 }
