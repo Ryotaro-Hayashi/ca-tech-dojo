@@ -15,9 +15,6 @@ func main() {
 	// コントローラーの初期化
 	userController := controllers.NewUserController(sqlHandler, jwtHandler)
 
-	// "/hello"に対しての処理を設定
-	http.HandleFunc("/hello", controllers.HelloHandler)
-	http.HandleFunc("/good-night", userController.GoodnightHandler)
 	http.HandleFunc("/users/get", userController.Index)
 
 	http.HandleFunc("/user/create", userController.Create)
