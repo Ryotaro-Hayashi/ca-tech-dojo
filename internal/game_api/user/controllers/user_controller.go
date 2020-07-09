@@ -81,37 +81,36 @@ func (controller *UserController) Create(w http.ResponseWriter, r *http.Request)
       panic(err) 
 	} 
 
-	user := models.User{}
-    err = json.Unmarshal(body, &user)  // []byte型を構造体に変換
+	userCreateRequest := models.UserCreateRequest{}
+    err = json.Unmarshal(body, &userCreateRequest)  // []byte型を構造体に変換
     if err != nil { 
      panic(err) 
-    } 
+    }
 
-	log.Printf("The request body is %+v", user)
-
-	user, err = controller.JwtHandler.Create(user) // トークンの生成
+	tokenString, err := controller.JwtHandler.Create(userCreateRequest.Name) // トークンの生成
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 	}
 
-	id, err := controller.UserRepository.Create(user) // ユーザーを保存
+	id, err := controller.UserRepository.Create(userCreateRequest.Name, tokenString) // ユーザーを保存
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 	}
 
-	user, err = controller.UserRepository.FindById(id) // idでユーザ検索
+	tokenString, err = controller.UserRepository.FindTokenById(id) // idでユーザ検索
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 	}
 
-	tokenMap := map[string]string{"token": user.Token} // tokenのmapを作成
+	userCreateResponse := models.UserCreateResponse{
+		Token: tokenString,
+	}
 
-	tokenByte, err := json.Marshal(tokenMap) // mapを []byte へ変換
+	userCreateResponseByte, err := json.Marshal(userCreateResponse) // 構造体を []byte へ変換
     if err != nil {
-		fmt.Fprint(w, err)
-	}
-	
-	tokenJson := string(tokenByte) // []byte をJSON文字列に変換
+        fmt.Fprint(w, err)
+    }
+    tokenJson := string(userCreateResponseByte) // []byte をJSON文字列に変換
 
 	fmt.Fprint(w, tokenJson)
 }
