@@ -36,8 +36,8 @@ func (repo *UserRepository) GetAll() (users models.Users, err error){
 }
 
 // DBにユーザーを保存して、保存したユーザーidを返す
-func (repo *UserRepository) Create(u models.User) (id int64, err error) {
-	result, err := repo.SqlHandler.Conn.Exec("INSERT INTO users (name, token) VALUES (?, ?)", u.Name, u.Token)
+func (repo *UserRepository) Create(name string, tokenString string) (id int64, err error) {
+	result, err := repo.SqlHandler.Conn.Exec("INSERT INTO users (name, token) VALUES (?, ?)", name, tokenString)
 	if err != nil {
 		return
 	}
@@ -50,26 +50,18 @@ func (repo *UserRepository) Create(u models.User) (id int64, err error) {
 	return
 }
 
-// データベースのユーザーをidで検索して返す
-func (repo *UserRepository) FindById(id int64) (user models.User, err error) {
-	row, err := repo.SqlHandler.Conn.Query("SELECT name, token FROM users where id = ?", id)
+// DBに保存されているユーザーのトークンをidで検索して返す
+func (repo *UserRepository) FindTokenById(id int64) (tokenString string, err error) {
+	row, err := repo.SqlHandler.Conn.Query("SELECT token FROM users where id = ?", id)
 	if err != nil {
 		return
 	}
 	defer row.Close()
 
-	var name string
-	var token string
-
 	row.Next()
-	if err = row.Scan(&name, &token); err != nil {
+	if err = row.Scan(&tokenString); err != nil {
 		return
 	}
-
-	user = models.User {
-		Name: name,
-		Token: token,
-	}
-
+	
 	return
 }
