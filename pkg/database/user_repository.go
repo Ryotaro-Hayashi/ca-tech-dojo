@@ -50,26 +50,18 @@ func (repo *UserRepository) Create(name string, tokenString string) (id int64, e
 	return
 }
 
-// データベースのユーザーをidで検索して返す
-func (repo *UserRepository) FindById(id int64) (user models.User, err error) {
-	row, err := repo.SqlHandler.Conn.Query("SELECT name, token FROM users where id = ?", id)
+// DBに保存されているユーザーのトークンをidで検索して返す
+func (repo *UserRepository) FindTokenById(id int64) (tokenString string, err error) {
+	row, err := repo.SqlHandler.Conn.Query("SELECT token FROM users where id = ?", id)
 	if err != nil {
 		return
 	}
 	defer row.Close()
 
-	var name string
-	var token string
-
 	row.Next()
-	if err = row.Scan(&name, &token); err != nil {
+	if err = row.Scan(&tokenString); err != nil {
 		return
 	}
-
-	user = models.User {
-		Name: name,
-		Token: token,
-	}
-
+	
 	return
 }
